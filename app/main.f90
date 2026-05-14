@@ -1,6 +1,12 @@
 program main
-  use matrixsign, only: say_hello
+  use matrixsign
   implicit none
+  integer, parameter   :: height=6, width=5
+  character(height*(width+1)) :: letter
 
-  call say_hello()
+  letter = make_r(height, width)
+  print *, len(letter)
+  write (*,'(A)') letter
+  
 end program main
+
