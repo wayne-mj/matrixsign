@@ -11,5 +11,9 @@ program main
   letter = make_e(height, width)
   ! print *, len(letter)
   write (*,'(A)') letter
+
+  letter = make_d(height, width)
+  ! print *, len(letter)
+  write (*,'(A)') letter
 end program main
 
