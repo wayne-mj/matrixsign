@@ -5,8 +5,11 @@ program main
   character(height*(width+1)) :: letter
 
   letter = make_r(height, width)
-  print *, len(letter)
+  ! print *, len(letter)
   write (*,'(A)') letter
   
+  letter = make_e(height, width)
+  ! print *, len(letter)
+  write (*,'(A)') letter
 end program main
 
