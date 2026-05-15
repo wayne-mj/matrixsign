@@ -3,12 +3,19 @@ program main
   implicit none
   integer, parameter   :: height=6, width=5
   character(height*(4*width+1)) :: letter
-  character(len=4)  ::  word
+  character(len=7)  ::  word
 
-  word = "BLUE"
-  letter = make_marquee(word, height, width)
+  word = "REDBLUK"
+  if (validate(word)) then
+    write (*,*) "Valid"
+  else 
+    write (*,*) "Not valid"
+  end if
 
-  write (*, '(A)') letter
+  letter = upper("aBc")
+  ! letter = make_marquee(word, height, width)
+
+  ! write (*, '(A)') letter
   ! letter = make_r(height, width)
   ! ! print *, len(letter)
   ! write (*,'(A)') letter

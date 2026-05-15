@@ -1,10 +1,14 @@
 module matrixsign
+  use stdlib_ascii
   implicit none
   private
   character(len=1), parameter       :: star = "*"
   character(len=1), parameter       :: empt = " "
+  integer, parameter                :: dictlen = 6
+  character(len=dictlen), parameter :: dictionary = "REDBLU"
+  
 
-  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee
+  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, upper
 contains
   ! subroutine say_hello
   !   print *, "Hello, matrixsign!"
@@ -148,7 +152,7 @@ contains
   function make_marquee(word, height, width) result(marquee)
     character(len=*), intent(in)                      :: word
     integer, intent(in)                               :: height, width
-    character(len=height*(len_trim(word)*width +1))  :: marquee
+    character(len=height*(len_trim(word)*width +1))   :: marquee
     character(len=height*(width+1))                   :: letter
     integer                                           :: row, col, pos, i, row_start, row_end
     integer                                           :: lenword
@@ -177,5 +181,64 @@ contains
     end do
   end function
   
+  function validate(word) result(tf)
+    character(len=*),intent(in)   :: word
+    logical                       :: tf
+    integer                       :: i,j, wordlen, tokens
+
+    tokens = 0
+
+    wordlen = len_trim(word)
+
+    do i=1 , wordlen
+      if (exists(word(i:i),dictionary)) then
+        tokens = tokens + 1
+      else 
+        tokens = tokens - 1
+      end if
+    end do
+    write (*,*) wordlen, tokens
+    if (tokens .eq. wordlen) then
+      tf = .true.
+    else 
+      tf = .false.
+    end if
+  end function
+
+  function exists(ch, str) result(b)
+    character(len=1),intent(in)     :: ch
+    character(len=*),intent(in)     :: str
+    logical                         :: b
+    integer                         :: i, token
+    integer                         :: lenstr
+
+    lenstr = len_trim(str)    
+    b = .false.
+    token = 0
+
+    do i=1,lenstr
+      if (ch .eq. str(i:i)) then
+        token = token + 1
+      end if
+    end do
+
+    if (token .gt. 0) then
+      b = .true.
+    else 
+      b = .false.
+    end if
+  end function
+
+  function upper(str) result(uppstr)
+    character(len=*),intent(in)   :: str 
+    character(len=:), allocatable :: uppstr
+    integer                       :: strlen, i, pos
+
+    strlen = len_trim(str)
+    uppstr = to_upper(str)
+
+    write (*,*) str, uppstr
+
+  end function
 end module matrixsign
 
