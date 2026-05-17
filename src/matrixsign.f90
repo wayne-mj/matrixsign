@@ -1,5 +1,6 @@
 module matrixsign
   use stdlib_ascii
+  use helpers
   implicit none
   private
   character(len=1), parameter       :: star = "*"
@@ -8,7 +9,7 @@ module matrixsign
   character(len=dictlen), parameter :: dictionary = "REDBLU"
   
 
-  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, upper
+  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, user_input
 contains
   ! subroutine say_hello
   !   print *, "Hello, matrixsign!"
@@ -205,28 +206,28 @@ contains
     end if
   end function
 
-  function exists(ch, str) result(b)
-    character(len=1),intent(in)     :: ch
-    character(len=*),intent(in)     :: str
-    logical                         :: b
-    integer                         :: i, token
-    integer                         :: lenstr
+  function user_input() result(word)
+    character (len=:), allocatable    :: word
+    character (len=256)               :: buffer
+    integer                           :: ierror
 
-    lenstr = len_trim(str)    
-    b = .false.
-    token = 0
+    do while (.true.)
+      write (*,'(A)', advance='no') "Enter your word, 'End' to terminate: "
+      read (*,'(A)', iostat = ierror) buffer
 
-    do i=1,lenstr
-      if (ch .eq. str(i:i)) then
-        token = token + 1
+      if (ierror .eq. 0) then
+        word = trim(buffer)
+        if (word == 'END') then
+          exit
+        else 
+          if (validate(word)) then
+            write (*,*) "Word is valid"
+          else 
+            write (*,'(A,A,A)') "Word: '", word, "' is invalid"
+          end if        
+        end if
       end if
     end do
-
-    if (token .gt. 0) then
-      b = .true.
-    else 
-      b = .false.
-    end if
   end function
 
   function upper(str) result(uppstr)
