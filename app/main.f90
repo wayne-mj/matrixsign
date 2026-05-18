@@ -3,12 +3,25 @@ program main
   implicit none
   integer, parameter   :: height=6, width=5
   character(height*(4*width+1)) :: letter
-  character(len=4)  ::  word
+  character(len=:), allocatable  ::  word
+  character(len=:), allocatable  :: render
 
-  word = "BLUE"
-  letter = make_marquee(word, height, width)
+  word = user_input(height,width)
 
-  write (*, '(A)') letter
+  ! render = make_marquee(word, height, width)
+  ! call display_marquee(render)
+  
+  ! word = "REDBLUK"
+  ! if (validate(word)) then
+  !   write (*,*) "Valid"
+  ! else 
+  !   write (*,*) "Not valid"
+  ! end if
+
+  ! letter = upper("aBc")
+  ! ! letter = make_marquee(word, height, width)
+
+  ! write (*, '(A)') letter
   ! letter = make_r(height, width)
   ! ! print *, len(letter)
   ! write (*,'(A)') letter
