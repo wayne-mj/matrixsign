@@ -26,3 +26,18 @@ In the end, I rewrote the project about four times before it resembled the requi
 ## The purpose of this rewrite
 
 I am writing this in Fortran because it feels like home.
+
+Sample run
+```
+Enter your word, 'End' to terminate: REDBLUE
+           7           7
+ Word is valid
+ **   ***  **   **   *    * *  *** 
+ * *  *    * *  * *  *    * *  *   
+ **   ***  * *  **   *    * *  *** 
+ **   *    * *  * *  *    * *  *   
+ * *  *    * *  * *  *    * *  *   
+ * *  ***  **   **   ***   *   *** 
+
+Enter your word, 'End' to terminate: END 
+```
