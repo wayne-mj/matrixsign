@@ -4,8 +4,13 @@ program main
   integer, parameter   :: height=6, width=5
   character(height*(4*width+1)) :: letter
   character(len=:), allocatable  ::  word
+  character(len=:), allocatable  :: render
 
-  word = user_input()
+  word = user_input(height,width)
+
+  ! render = make_marquee(word, height, width)
+  ! call display_marquee(render)
+  
   ! word = "REDBLUK"
   ! if (validate(word)) then
   !   write (*,*) "Valid"

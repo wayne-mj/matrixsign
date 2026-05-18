@@ -9,7 +9,7 @@ module matrixsign
   character(len=dictlen), parameter :: dictionary = "REDBLU"
   
 
-  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, user_input
+  public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, user_input, display_marquee
 contains
   ! subroutine say_hello
   !   print *, "Hello, matrixsign!"
@@ -182,6 +182,19 @@ contains
     end do
   end function
   
+  subroutine display_marquee(marquee)! result (d)
+    character(len=*), intent(in)      :: marquee
+    logical                           :: d
+
+    d = .false.
+    if (len_trim(marquee) .gt. 0) then
+      write (*, "(A)") marquee
+      d = .true.
+    else 
+      d = .false.
+    end if      
+  end subroutine
+
   function validate(word) result(tf)
     character(len=*),intent(in)   :: word
     logical                       :: tf
@@ -206,9 +219,11 @@ contains
     end if
   end function
 
-  function user_input() result(word)
+  function user_input(height,width) result(word)
+    integer, intent(in)               :: height, width
     character (len=:), allocatable    :: word
     character (len=256)               :: buffer
+    character (len=:), allocatable    :: render
     integer                           :: ierror
 
     do while (.true.)
@@ -222,6 +237,9 @@ contains
         else 
           if (validate(word)) then
             write (*,*) "Word is valid"
+            render = make_marquee(word,height, width)
+            call display_marquee(render)
+
           else 
             write (*,'(A,A,A)') "Word: '", word, "' is invalid"
           end if        
