@@ -1,38 +1,54 @@
 module matrixsign
+  !> Use the Fortran STDLIB and helpers modules
   use stdlib_ascii
   use helpers
   implicit none
   private
+  !> Define the star as a parameter as this can be changed to something
+  !> else at a later stage, including the empty spaces around.
   character(len=1), parameter       :: star = "*"
   character(len=1), parameter       :: empt = " "
+  !> Define the dictionary
   integer, parameter                :: dictlen = 6
   character(len=dictlen), parameter :: dictionary = "REDBLU"
   
-
+  !> Expose the public functions and subroutines, otherwise everything
+  !> private
   public :: make_r, make_e, make_d, make_b, make_l, make_u, make_marquee, validate, user_input, display_marquee
 contains
-  ! subroutine say_hello
-  !   print *, "Hello, matrixsign!"
-  ! end subroutine say_hello
-
+  
+  !> Function to render the R
   function make_r(height,width) result(letter_str)
     integer, intent(in)                   :: height, width
     character(len=(height)*(width+1))     :: letter_str
     integer                               :: row,col, pos
 
+    !> A different approach is require to that in Python
+    !> The index of the position of the string has to be tracked  as
+    !> Simply appending a character with // does not achieve the same 
+    !> result.  String are defined a length (len=16), performing a // 
+    !> (string add) mean add to position 17 which does not exist.
     pos = 1
+    !> This is really height * width+1 spaces not ""
+    !> It needs to be initialised otherwise it contains garbage.
     letter_str = ""
+    !> Technically Fortran starts do loops at 1..n, but because the math
+    !> relies on 0 it had to be adjusted to work
     do row = 0, height-1
       do col = 0, width-1
         if ((col .eq. 1) .or. & 
             (col .eq. 2 .and. (row .eq. 0 .or. row .eq. 2 .or. row .eq. 3)) .or. &
             (col .eq. 3 .and. (row .eq. 1 .or. row .eq. 4 .or. row .eq. 5)) ) then
+          !> String are treated as fixed length arrays
           letter_str(pos:pos) = star
         else
           letter_str(pos:pos) = empt
         end if
+        !> Increment pos
         pos = pos + 1
       end do
+      !> Add the newline.  Because Fortran might not be used on a ASCII
+      !> system, the new_line function is use instead of "\n"
       letter_str(pos:pos) = new_line('a')
       pos = pos + 1
     end do
@@ -150,6 +166,8 @@ contains
     end do
   end function
 
+  !> Make marquee function from the word, heigh and width returning
+  !> the rendered marquee
   function make_marquee(word, height, width) result(marquee)
     character(len=*), intent(in)                      :: word
     integer, intent(in)                               :: height, width
@@ -158,6 +176,7 @@ contains
     integer                                           :: row, col, pos, i, row_start, row_end
     integer                                           :: lenword
 
+    !> Remove any whitespace
     lenword = len_trim(word)
     pos =1
 
@@ -172,6 +191,11 @@ contains
           case("U"); letter = make_u(height,width)
         end select
 
+        !> This is the closest to the string.split('\n')
+        !> Essentailly:
+        !> abcef\nghijk\nlmnop\n
+        !> For row 0, start=1, end = 5 a..f
+        !> For row 1, start=7, end = 11 g..k and so on
         row_start = row * (width+1) +1
         row_end = row * (width +1) + width
         marquee(pos:pos+width-1) = letter(row_start:row_end)
@@ -182,23 +206,21 @@ contains
     end do
   end function
   
-  subroutine display_marquee(marquee)! result (d)
+  !> Function to display the marquee
+  subroutine display_marquee(marquee)
     character(len=*), intent(in)      :: marquee
-    logical                           :: d
-
-    d = .false.
+    
+    !> Make sure there is something to display
     if (len_trim(marquee) .gt. 0) then
       write (*, "(A)") marquee
-      d = .true.
-    else 
-      d = .false.
     end if      
   end subroutine
 
+  !> Validate the word
   function validate(word) result(tf)
     character(len=*),intent(in)   :: word
     logical                       :: tf
-    integer                       :: i,j, wordlen, tokens
+    integer                       :: i, wordlen, tokens
 
     tokens = 0
 
